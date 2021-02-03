@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import './App.css'
 // import MyComponent from './components/MyComponent'
@@ -25,6 +25,16 @@ const style = {
 
 function App() {
   const [loggedUser, setLoggedUser] = useState(null)
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('loggedUser')) || null
+    setLoggedUser(user)
+  },[])
+
+  useEffect(() => {
+    localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
+  }, [loggedUser])
+
 
   return (
     <>

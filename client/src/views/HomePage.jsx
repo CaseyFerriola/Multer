@@ -23,7 +23,7 @@ const searchByScientificName = (allTrees, search) => {
             refinedTrees.push(item)
         }
     })
-    console.log(refinedTrees)
+    // console.log(refinedTrees)
     return refinedTrees
 }
 const searchByOther = (allTrees, search, searchBy) => {
@@ -49,7 +49,7 @@ const HomePage = props => {
     const [searchBy, setSearchBy] = useState('sName')
     const [search, setSearch] = useState('')
     const [searchFlag, setSearchFlag] = useState(true)
-    console.log(props.loggedUser)
+    // console.log(props.loggedUser)
     useEffect(() => {
         axios.get('http://localhost:8000/api/trees')
             .then(res => {
