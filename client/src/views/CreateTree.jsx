@@ -1,10 +1,12 @@
-import React, {useState, useEffect} from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react'
 import TreeForm from '../components/TreeForm'
+
 
 const CreateTree = props => {
     return (
-        <TreeForm />
+        <>
+            <TreeForm loggedUser = { props.loggedUser }/>
+        </>
     )
 }
 

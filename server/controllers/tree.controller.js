@@ -1,9 +1,5 @@
 const Tree = require('../models/tree.model')
-const multer = require('multer')
-const { v4 } = require('uuid')
-let path = require('path')
-const router = require('express').Router();
-
+const addTreeToUser = require('./user.controller.js')
 module.exports.findAll = (req, res) => {
     Tree.find()
         .then(allTrees => res.json({ trees: allTrees }))
@@ -16,9 +12,35 @@ module.exports.findOneTree = (req, res) => {
         .catch(err => res.json({ message: "Something went wrong when finding one tree", error: err }))
 }
 
-module.exports.createTree = (req, res, next) => {
-    console.log(req.file)
+module.exports.createTree = (req, res) => {
+    console.log("****************************************************************************")
+    console.log(req.files)
+    console.log(req.files.wholeTree[0].filename)
+    const newTreeData = {
+        genus: req.body.genus,
+        species: req.body.species,
+        commonName: req.body.commonName,
+        habitat: req.body.habitat,
+        location: {lat: req.body.lat, lng: req.body.lng},
+        wholeTree: req.files.wholeTree[0].filename,
+        leaf: req.files.leaf[0].filename,
+        trunk: req.files.trunk[0].filename,
+        fruit: req.files.fruit[0].filename,
+        bud: req.files.bud[0].filename
+    }
+    Tree.create(newTreeData)
+        .then(newTree => {
+            addTreeToUser(newTree)
+            res.json({tree: newTree})
+        })
+        .catch(err => res.json({message: "Something went wrong when creating a tree", error: err}))
 
+}
+
+module.exports.deleteTree = (req, res) => {
+    Tree.findOneAndDelete({_id: req.params._id})
+        .then(() => res.json("The tree was successfully deleted"))
+        .catch(err => res.json({message: "Something went wrong when deleting a tree", error: err}))
 }
 
 

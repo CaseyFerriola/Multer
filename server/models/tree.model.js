@@ -1,9 +1,9 @@
+const { ObjectID } = require('bson')
 const mongoose = require('mongoose')
 
 const TreeSchema = new mongoose.Schema({
     genus: {
-        type: String, 
-        required: [true, "You must have a genus"]
+        type: String
     },
     species: {
         type: String
@@ -14,22 +14,28 @@ const TreeSchema = new mongoose.Schema({
     habitat: {
         type: String
     },
+    user: {
+        String
+    },
+    location: {
+        type: Object
+    },
     wholeTree: {
         type: String
     },
-    // leaf: {
-    //     type: String
-    // },
-    // trunk: {
-    //     type: String
-    // },
-    // fruit: {
-    //     type: String
-    // },
-    // bud: {
-    //     type: String
-    // }
-})
+    leaf: {
+        type: String
+    },
+    trunk: {
+        type: String
+    },
+    fruit: {
+        type: String
+    },
+    bud: {
+        type: String
+    }
+}, {timestamps: true})
 
 const Tree = mongoose.model('tree', TreeSchema)
 

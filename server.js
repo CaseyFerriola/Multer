@@ -1,12 +1,16 @@
 const express = require('express')
 const app = express()
 const multer = require('multer')
-
+const cookieParser = require('cookie-parser')
 const port = 8000
 
 const cors = require('cors')
 
-app.use(cors())
+require('dotenv').config()
+
+app.use(cookieParser())
+
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}))
 
 require('./server/config/mongoose.config')
 
