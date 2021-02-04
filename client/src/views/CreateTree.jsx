@@ -5,7 +5,7 @@ import TreeForm from '../components/TreeForm'
 const CreateTree = props => {
     return (
         <>
-            <TreeForm loggedUser = { props.loggedUser }/>
+            <TreeForm setLoggedUser = { props.setLoggedUser } loggedUser = { props.loggedUser }/>
         </>
     )
 }

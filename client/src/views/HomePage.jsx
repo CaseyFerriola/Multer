@@ -11,6 +11,10 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
 
         // marginLeft: '20px'
+    },
+    tabs: {
+        display: 'flex',
+        justifyContent: 'space-between'
     }
 }));
 
@@ -37,7 +41,7 @@ const searchByOther = (allTrees, search, searchBy) => {
         })
         return refinedTrees
     } else {
-        return allTrees
+        return allTrees.filter(tree => tree['commonName'].toLowerCase().includes(search.toLowerCase()) )
     }
 }
 
@@ -49,16 +53,31 @@ const HomePage = props => {
     const [searchBy, setSearchBy] = useState('sName')
     const [search, setSearch] = useState('')
     const [searchFlag, setSearchFlag] = useState(true)
+    const [tabController, setTabController] = useState(true)
     // console.log(props.loggedUser)
     useEffect(() => {
         axios.get('http://localhost:8000/api/trees')
             .then(res => {
-                setTrees(res.data.trees)
-                setAllTrees(res.data.trees)
+                if( tabController ){
+                    setTrees(res.data.trees)
+                    setAllTrees(res.data.trees)
+                }else{
+                    let userTrees = []
+                    res.data.trees.map((tree, index) => {
+                        console.log(tree.user, props.loggedUser._id)
+                        if(tree.user === props.loggedUser._id){
+                            userTrees.push(tree)
+                        }
+                    })
+                    setTrees(userTrees)
+                    setAllTrees(userTrees)
+                }
+
+
             })
             .catch(err => console.log(err))
 
-    }, [])
+    }, [tabController])
 
     const autoSearchHandler = e => {
         setSearch(e.target.innerText)
@@ -170,8 +189,10 @@ const HomePage = props => {
                                     )}
                         </Grid>
                         <Grid item xs={2}>
-                            <button style={{ border: '0px', backgroundColor: 'white', marginBottom: '8px' }} type='submit'><Button style={{ backgroundColor: 'green', color: 'white' }} component="span" variant='contained'>Search</Button></button>
-                            <Button style={{ backgroundColor: 'gray', color: 'black' }} component="span" variant='contained' onClick = {resetHandler}>All Trees</Button>
+                            <div>
+                                <button style={{ border: '0px', backgroundColor: 'white', marginBottom: '8px' }} type='submit'><Button style={{ backgroundColor: 'green', color: 'white' }} component="span" variant='contained'>Search</Button></button>
+                                <Button style={{ backgroundColor: 'gray', color: 'black' }} component="span" variant='contained' onClick={resetHandler}>All</Button>
+                            </div>
                         </Grid>
 
                     </Grid>
@@ -181,7 +202,7 @@ const HomePage = props => {
 
                 <div className={classes.mapGrid}>
                     {
-                        allTrees ? <MainMap trees={trees} /> : <></>
+                        allTrees ? <MainMap tabController = { tabController } setTabController = { setTabController } trees={trees} /> : <></>
                     }
                 </div>
             </div>

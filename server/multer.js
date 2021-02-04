@@ -52,6 +52,7 @@ const treeImageHandler = (req, res) => {
             if(!req.files.bud || err){
                 errors.bud = ' Bud '
             }
+            console.log(errors)
             return res.json(errors) 
         } else{
             console.log("in sucess section")

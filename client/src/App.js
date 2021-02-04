@@ -49,7 +49,7 @@ function App() {
             <div className='main container'>
 
               <Router>
-                <CreateTree loggedUser = { loggedUser } path='/trees/new' />
+                <CreateTree loggedUser = { loggedUser } setLoggedUser = { setLoggedUser } path='/trees/new' />
                 <HomePage loggedUser = { loggedUser } path='/trees' />
               </Router>
             </div>

@@ -15,7 +15,7 @@ const TreeSchema = new mongoose.Schema({
         type: String
     },
     user: {
-        String
+        type: String
     },
     location: {
         type: Object

@@ -40,7 +40,7 @@ const TreeForm = props => {
         species: '',
         commonName: '',
         habitat: '',
-        // user: props.loggedUser._id, 
+        user: props.loggedUser._id, 
         wholeTree: null,
         leaf: null,
         trunk: null,
@@ -92,7 +92,7 @@ const TreeForm = props => {
         data.append("species", tree.species)
         data.append("commonName", tree.commonName)
         data.append("habitat", tree.habitat)
-        // data.append("user", tree.user)
+        data.append("user", tree.user)
         for (var key in tree.location) {
             data.append(key, tree.location[key]);
         }
@@ -107,8 +107,14 @@ const TreeForm = props => {
                     setError(res.data)
                     
                 } else {
-                    console.log("success")
-                    navigate('/trees')
+                    axios.get(`http://localhost:8000/api/users/${props.loggedUser._id}`)
+                        .then(res => {
+                            let newLoggedUser = (({ _id, firstName, lastName, trees, mostID }) => ({ _id, firstName, lastName, trees, mostID }))(res.data.user)
+                            // console.log(newLoggedUser)
+                            props.setLoggedUser(newLoggedUser)
+                            navigate('/trees')
+                        }) 
+                        .catch(err => console.log(err))
                 }
             })
             .catch(err => console.log(err))
@@ -178,72 +184,41 @@ const TreeForm = props => {
                     <Hidden smDown><Grid item sm={2}></Grid></Hidden>
                     <Grid item xs={6} sm={4} lg={2}>
                         <div className={classes.root}>
-                            <input type="file" id='wholeTree' name='wholeTree' className={classes.input} multiple accept="image/*" onChange={imageChangeHandler} />
+                            <input type="file" id='wholeTree' name='wholeTree' className={classes.input} accept="image/*" onChange={imageChangeHandler} />
                             <label htmlFor="wholeTree">
-                                <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} component="span">
+                                <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} component="span" endIcon= {<PhotoCamera/>}>
                                     Tree
                             </Button>
                             </label>
-                            <input accept="image/*" id="wholeTree" name='wholeTree' type="file" className={classes.input} onChange={imageChangeHandler} />
-                            <label htmlFor="icon-button-file">
-                                <IconButton aria-label="upload picture" component="span">
-                                    {!tree.wholeTree && error.wholeTree ? <> <PhotoCamera style={{ color: 'green' }} /> <Clear style={{ color: 'red' }} /> </> :
-                                        <PhotoCamera style={{ color: 'green' }} />}
-
-                                </IconButton>
-
-                            </label>
                         </div>
                     </Grid>
                     <Grid item xs={6} sm={4} lg={2}>
                         <div className={classes.root}>
-                            <input type="file" id='leaf' name='leaf' className={classes.input} multiple accept="image/*" onChange={imageChangeHandler} />
+                            <input type="file" id='leaf' name='leaf' className={classes.input} accept="image/*" onChange={imageChangeHandler} />
                             <label htmlFor="leaf">
-                                <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} component="span">
+                                <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} component="span" endIcon= {<PhotoCamera/>}>
                                     Leaf
                             </Button>
                             </label>
-                            <input accept="image/*" id="leaf" name='leaf' type="file" className={classes.input} onChange={imageChangeHandler} />
-                            <label htmlFor="icon-button-file">
-                                <IconButton aria-label="upload picture" component="span">
-                                    {!tree.leaf && error.leaf ? <> <PhotoCamera style={{ color: 'green' }} /> <Clear style={{ color: 'red' }} /> </> :
-                                        <PhotoCamera style={{ color: 'green' }} />}
-                                </IconButton>
-
-                            </label>
                         </div>
                     </Grid>
                     <Grid item xs={6} sm={4} lg={2}>
                         <div className={classes.root}>
-                            <input type="file" id='trunk' name='trunk' className={classes.input} multiple accept="image/*" onChange={imageChangeHandler} />
+                            <input type="file" id='trunk' name='trunk' className={classes.input} accept="image/*" onChange={imageChangeHandler} />
                             <label htmlFor="trunk">
-                                <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} component="span">
+                                <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} component="span" endIcon= {<PhotoCamera/>}>
                                     Trunk
                             </Button>
                             </label>
-                            <input accept="image/*" id="trunk" name='trunk' type="file" className={classes.input} onChange={imageChangeHandler} />
-                            <label htmlFor="icon-button-file">
-                                <IconButton aria-label="upload picture" component="span">
-                                    {!tree.trunk && error.trunk ? <> <PhotoCamera style={{ color: 'green' }} /> <Clear style={{ color: 'red' }} /> </> :
-                                        <PhotoCamera style={{ color: 'green' }} />}
-                                </IconButton>
-                            </label>
                         </div>
                     </Grid>
                     <Grid item xs={6} sm={4} lg={2}>
                         <div className={classes.root}>
-                            <input type="file" id='fruit' name='fruit' className={classes.input} multiple accept="image/*" onChange={imageChangeHandler} />
+                            <input type="file" id='fruit' name='fruit' className={classes.input} accept="image/*" onChange={imageChangeHandler} />
                             <label htmlFor="fruit">
-                                <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} component="span">
+                                <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} component="span" endIcon= {<PhotoCamera/>}>
                                     Fruit
                             </Button>
-                            </label>
-                            <input accept="image/*" id="fruit" name='fruit' type="file" className={classes.input} onChange={imageChangeHandler} />
-                            <label htmlFor="icon-button-file">
-                                <IconButton aria-label="upload picture" component="span">
-                                    {!tree.fruit && error.fruit ? <> <PhotoCamera style={{ color: 'green' }} /> <Clear style={{ color: 'red' }} /> </> :
-                                        <PhotoCamera style={{ color: 'green' }} />}
-                                </IconButton>
                             </label>
                         </div>
                     </Grid>
@@ -251,16 +226,9 @@ const TreeForm = props => {
                         <div className={classes.root}>
                             <input type="file" id='bud' name='bud' className={classes.input} multiple accept="image/*" onChange={imageChangeHandler} />
                             <label htmlFor="bud">
-                                <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} component="span">
+                                <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} component="span" endIcon= {<PhotoCamera/>}>
                                     Bud
                             </Button>
-                            </label>
-                            <input accept="image/*" id="bud" name='bud' type="file" className={classes.input} onChange={imageChangeHandler} />
-                            <label htmlFor="icon-button-file">
-                                <IconButton aria-label="upload picture" component="span">
-                                    {!tree.bud && error.bud ? <> <PhotoCamera style={{ color: 'green' }} /> <Clear style={{ color: 'red' }} /> </> :
-                                        <PhotoCamera style={{ color: 'green' }} />}
-                                </IconButton>
                             </label>
                         </div>
                     </Grid>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Avatar, Button, CssBaseline, TextField, Paper, Grid, Typography, makeStyles } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link, navigate } from '@reach/router'
@@ -61,7 +61,15 @@ const Register = (props) => {
     })
     const [error, setError] = useState({})
 
-
+    useEffect(() => {
+        axios.get('http://localhost:8000/api/logout')
+        .then(res => {
+            navigate('/')
+            props.setLoggedUser('')
+        })
+        .catch(err => console.log(err))
+    }, [])
+    
     const onChangeHandler = e => {
         // console.log(e.target)
         setNewUser({

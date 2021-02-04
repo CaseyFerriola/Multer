@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Paper, Box, Grid, Typography, makeStyles } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link, navigate } from '@reach/router'
@@ -53,6 +53,15 @@ const useStyles = makeStyles((theme) => ({
 
 const Login = (props) => {
     const classes = useStyles();
+
+    useEffect(() => {
+        axios.get('http://localhost:8000/api/logout')
+        .then(res => {
+            navigate('/')
+            props.setLoggedUser('')
+        })
+        .catch(err => console.log(err))
+    }, [])
     const [user, setUser] = useState({
         email: '', 
         password: ''

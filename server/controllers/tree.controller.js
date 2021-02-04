@@ -1,5 +1,5 @@
 const Tree = require('../models/tree.model')
-const addTreeToUser = require('./user.controller.js')
+const UserController = require('./user.controller')
 module.exports.findAll = (req, res) => {
     Tree.find()
         .then(allTrees => res.json({ trees: allTrees }))
@@ -14,13 +14,14 @@ module.exports.findOneTree = (req, res) => {
 
 module.exports.createTree = (req, res) => {
     console.log("****************************************************************************")
-    console.log(req.files)
-    console.log(req.files.wholeTree[0].filename)
+    // console.log(req.body)
+    // console.log(req.files.wholeTree[0].filename)
     const newTreeData = {
         genus: req.body.genus,
         species: req.body.species,
         commonName: req.body.commonName,
         habitat: req.body.habitat,
+        user: req.body.user,
         location: {lat: req.body.lat, lng: req.body.lng},
         wholeTree: req.files.wholeTree[0].filename,
         leaf: req.files.leaf[0].filename,
@@ -30,7 +31,10 @@ module.exports.createTree = (req, res) => {
     }
     Tree.create(newTreeData)
         .then(newTree => {
-            addTreeToUser(newTree)
+            // console.log('Tree Created', newTree)
+            UserController.addTreeToUser(newTree)
+            // let newUser = UserController.findUserFromTree(newTree.user)
+            // console.log(newUser)
             res.json({tree: newTree})
         })
         .catch(err => res.json({message: "Something went wrong when creating a tree", error: err}))

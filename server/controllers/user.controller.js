@@ -14,6 +14,14 @@ module.exports.findOneUser = (req, res) => {
         .catch(err => res.json({ message: "Something went wrong when finding one User", error: err }))
 }
 
+// module.exports.findUserFromTree = (req, res) => {
+//     console.log('Hello from user', req, res)
+//     User.findOne({_id: req})
+//         .then(user => console.log(user, 'hello again'))
+//         .catch(err => console.log(err))
+// }
+
+
 module.exports.createUser = (req, res) => {
     console.log('increateuser')
     User.create(req.body)
@@ -22,7 +30,7 @@ module.exports.createUser = (req, res) => {
                 id: newUser._id
             }, process.env.SECRET_KEY);
 
-            res.cookie("usertoken", userToken, {httpOnly: true}).json({ success: 'success', user: (({ firstName, lastName, trees, mostID }) => ({ firstName, lastName, trees, mostID }))(newUser) });
+            res.cookie("usertoken", userToken, {httpOnly: true}).json({ success: 'success', user: (({ _id, firstName, lastName, trees, mostID }) => ({ _id, firstName, lastName, trees, mostID }))(newUser) });
         })
         .catch(err => res.json({ message: "Something went wrong when creating one User", error: err }))
 }
@@ -50,7 +58,7 @@ module.exports.login = async (req, res) => {
         id: user._id
     }, process.env.SECRET_KEY)
 
-    res.cookie('userToken', userToken, { httpOnly: true }).json({ message: 'Success', user: (({ firstName, lastName, trees, mostID }) => ({ firstName, lastName, trees, mostID }))(user) })
+    res.cookie('userToken', userToken, { httpOnly: true }).json({ message: 'Success', user: (({ _id, firstName, lastName, trees, mostID }) => ({ _id, firstName, lastName, trees, mostID }))(user) })
 }
 
 module.exports.logout = (req, res) => {
@@ -59,7 +67,11 @@ module.exports.logout = (req, res) => {
 }
 
 module.exports.addTreeToUser = (tree) => {
-    User.findOneAndUpdate({_id: tree.user}, {$push: {trees: tree._id}})
-        .then(console.log('success'))
+    // console.log('hello from addTreeToUser')
+    User.findOneAndUpdate({_id: tree.user}, {$push: {trees: tree._id}}, {new: true} )
+        .then(user => {
+            console.log('success in addTreeToUser')
+            
+        })
         .catch(err=> console.log(err))
 }
