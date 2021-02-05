@@ -5,6 +5,7 @@ import { Grid, InputLabel, Select, MenuItem, makeStyles, Container, TextField, B
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import treeNames from '../treeNames'
 import genera from '../genus'
+import { LocalConvenienceStoreOutlined } from '@material-ui/icons'
 const useStyles = makeStyles((theme) => ({
     mapGrid: {
         display: 'flex',
@@ -72,7 +73,6 @@ const HomePage = props => {
                     setTrees(userTrees)
                     setAllTrees(userTrees)
                 }
-
 
             })
             .catch(err => console.log(err))

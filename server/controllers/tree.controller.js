@@ -47,6 +47,11 @@ module.exports.deleteTree = (req, res) => {
         .catch(err => res.json({message: "Something went wrong when deleting a tree", error: err}))
 }
 
+module.exports.deleteAll = (req, res) => {
+    Tree.deleteMany()
+        .then(() => res.json('successfully deleted all, We hope'))
+        .catch(err => res.json({message: 'Could not delete all trees'}))
+}
 
 
 

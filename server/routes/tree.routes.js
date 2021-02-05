@@ -12,6 +12,7 @@ module.exports = app => {
     app.get("/api/trees/:_id", TreeController.findOneTree)
     app.post("/api/trees/create/new", treeImageHandler)   
     app.delete("/api/trees/delete/:_id", TreeController.deleteTree)
+    app.delete("/api/trees/delete/all/trees", TreeController.deleteAll)
 }
 
 

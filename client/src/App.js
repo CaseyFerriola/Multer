@@ -14,6 +14,7 @@ import HomePage from './views/HomePage'
 import { Router, navigate } from '@reach/router'
 import Login from './views/Login'
 import Register from './views/Register'
+import SingleTreeDisplay from './views/SingleTreeDisplay'
 
 const style = {
   backgroundImage: `url(${background})`,
@@ -51,6 +52,7 @@ function App() {
               <Router>
                 <CreateTree loggedUser = { loggedUser } setLoggedUser = { setLoggedUser } path='/trees/new' />
                 <HomePage loggedUser = { loggedUser } path='/trees' />
+                <SingleTreeDisplay loggedUser = { loggedUser } path='/trees/:id'/>
               </Router>
             </div>
           </CssBaseline>

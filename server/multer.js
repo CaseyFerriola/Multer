@@ -7,7 +7,7 @@ var treeImageFields = [{name: 'wholeTree', maxCount: 1}, {name: 'leaf', maxCount
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null, `server/images/${file.fieldname}/`)
+        cb(null, `server/public/images/${file.fieldname}/`)
     },
     filename: function (req, file, cb) {
         cb(null, req.body.genus + '-' + req.body.species + '-' + Date.now() + path.extname(file.originalname))

@@ -37,7 +37,7 @@ const NavBar = (props) => {
         <AppBar position='fixed' >
             <Toolbar  >
                 <Container maxWidth='lg' className={classes.header} >
-                    <IconButton edge='start' style={{ color: 'white' }} aria-label='nature'>
+                    <IconButton onClick = { () => navigate('/trees') } edge='start' style={{ color: 'white' }} aria-label='nature'>
                         <Nature fontSize='large' />
 
                         <Typography style={{ color: 'white', marginLeft: '20px', fontFamily: 'candara' }} variant="h5" noWrap>

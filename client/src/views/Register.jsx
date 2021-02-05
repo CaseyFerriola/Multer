@@ -64,7 +64,6 @@ const Register = (props) => {
     useEffect(() => {
         axios.get('http://localhost:8000/api/logout')
         .then(res => {
-            navigate('/')
             props.setLoggedUser('')
         })
         .catch(err => console.log(err))

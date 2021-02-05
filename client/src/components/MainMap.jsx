@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
 import { Typography, IconButton, makeStyles, Button } from '@material-ui/core'
 import { Add, MyLocation } from '@material-ui/icons'
 import { navigate } from '@reach/router'
@@ -18,7 +18,7 @@ const useStyle = makeStyles({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'flex-end'
-    }, 
+    },
     tab: {
         borderBottomLeftRadius: '0px',
         borderBottomRightRadius: '0px',
@@ -26,17 +26,20 @@ const useStyle = makeStyles({
         borderTopRightRadius: '8px',
     },
     offTab: {
-        backgroundColor: 'gray', 
+        backgroundColor: 'gray',
         color: 'black',
         zIndex: 0
     },
     onTab: {
-        backgroundColor: 'black', 
+        backgroundColor: 'black',
         color: 'gray',
         zIndex: 1
     },
     rightTab: {
         marginLeft: '-10px'
+    },
+    image: {
+        width: '75px'
     }
 
 })
@@ -48,6 +51,9 @@ function MainMap(props) {
     const [currentPosition, setCurrentPosition] = useState({});
     const [locationFlag, setLocationFlag] = useState(true)
     const [map, setMap] = React.useState(null)
+    const [markerMap, setMarkerMap] = useState({})
+    const [markerHover, setMarkerHover] = useState(null)
+    const [infoOpen, setInfoOpen] = useState(false)
 
     // console.log(props.trees[0].location)
 
@@ -67,8 +73,30 @@ function MainMap(props) {
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(success);
     }, [locationFlag])
+    const markerLoadHandler = (marker, tree) => {
+        setMarkerMap(prevState => {
+            // console.log(prevState)
+            return { ...prevState, [tree._id]: marker }
+        })
+        // console.log(markerMap)
+    }
+    const handleMarkerHover = (e, place) => {
+        // console.log(markerMap)
+        setMarkerHover(place)
+        if (!infoOpen)
+            setInfoOpen(true)
+    }
 
-
+    const handleMarkerLeave = (e, place) => {
+        setMarkerHover(null)
+        if (infoOpen) {
+            setInfoOpen(false)
+        }
+    }
+    const markerClickHandler = (event, item) => {
+        console.log('clicked')
+        navigate(`/trees/${item._id}`)
+    }
     const allTabHandler = e => {
         props.setTabController(true)
     }
@@ -90,8 +118,8 @@ function MainMap(props) {
         <div id='mapStyle'>
             <div className={classes.mapButtons}>
                 <div>
-                    <Button className = { props.tabController? `${classes.tab} ${classes.onTab}` :  `${classes.tab} ${classes.offTab}`} component="span" variant='contained' onClick = { allTabHandler }>All Trees</Button>
-                    <Button className = { props.tabController? `${classes.tab} ${classes.rightTab} ${classes.offTab}` : `${classes.tab} ${classes.rightTab} ${classes.onTab}` } component="span" variant='contained' onClick = { yourTabHandler }>Your Trees</Button>
+                    <Button className={props.tabController ? `${classes.tab} ${classes.onTab}` : `${classes.tab} ${classes.offTab}`} component="span" variant='contained' onClick={allTabHandler}>All Trees</Button>
+                    <Button className={props.tabController ? `${classes.tab} ${classes.rightTab} ${classes.offTab}` : `${classes.tab} ${classes.rightTab} ${classes.onTab}`} component="span" variant='contained' onClick={yourTabHandler}>Your Trees</Button>
                 </div>
                 <IconButton edge='start' style={{ color: 'green' }} aria-label='nature' onClick={addTreeHandler}>
                     <Add fontSize='large' />
@@ -119,17 +147,32 @@ function MainMap(props) {
                 {
                     props.trees ?
                         (
-                            props.trees.map((item, index) => {
-                                { console.log(typeof parseFloat(item.location.lat)) }
+                            props.trees.map((tree, index) => {
+                                // { console.log(typeof parseFloat(tree.location.lat)) }
                                 return <Marker
-                                    key={item._id}
-                                    position={{ lat: parseFloat(item.location.lat), lng: parseFloat(item.location.lng) }}
-                                    label={item.genus[0]}
-                                />
+                                    key={tree._id}
+                                    position={{ lat: parseFloat(tree.location.lat), lng: parseFloat(tree.location.lng) }}
+                                    label={tree.genus[0]}
+                                    onClick={(event) => markerClickHandler(event, tree)}
+                                    onLoad={marker => markerLoadHandler(marker, tree)}
+                                    onMouseOver={e => handleMarkerHover(e, tree)}
+                                    onMouseOut={e => handleMarkerLeave(e, tree)}
+                                >
+
+                                    {
+                                        infoOpen && (markerHover == tree) && (
+                                            <InfoWindow>
+                                                <>
+                                                    <strong><p>{`${tree.genus} ${tree.species}`}</p> </strong>
+                                                    <img className = { classes.image } src={`http://localhost:8000/static/images/wholetree/${tree.wholeTree}`} alt="Whole Tree Picture" />
+                                                </>
+                                            </InfoWindow>
+                                        )
+                                    }
+                                </Marker>
                             })
                         ) : ''
                 }
-                <Marker style={{ backgroundColor: 'green' }} opacity={1} key='hello' position={{ lng: 40.6837, lat: 73.9750 }} label='A' />
             </GoogleMap>
             <small><i>Search for trees anywhere in the world</i></small>
         </div>
@@ -137,3 +180,7 @@ function MainMap(props) {
 }
 
 export default React.memo(MainMap)
+
+
+
+
